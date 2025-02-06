@@ -1,0 +1,35 @@
+\documentclass[convert={density=600}]{standalone}
+\standaloneconfig{border=1pt .5pt 1pt 2pt}
+
+\usepackage{tikz}
+
+\usepackage{catchfile}
+\newcommand{\getenv}[2][]{%
+  \CatchFileEdef{\temp}{"|kpsewhich --var-value #2"}{\endlinechar=-1}%
+  \if\relax\detokenize{#1}\relax\temp\else\let#1\temp\fi}
+
+
+\newcommand\hlbox[2][]{%
+    \tikz[overlay]\node[%
+        fill=blue!20,%
+        fill opacity=1.0,%
+        text opacity=1,%
+        inner sep=1.5pt,%
+        anchor=text,%
+        rectangle,%
+        rounded corners=0.75mm,%
+        text depth=0pt,%
+        inner xsep=0pt,%
+        #1]%
+    {#2};%
+    \phantom{#2}%
+}
+
+\begin{document}
+%
+% pdflatex is very picky about the file names during compilation.
+% Although not ideal, you need to copy the file and rename to what you want it to be.
+\getenv[\INCLUDEPATH]{TEX_FILE_PATH}%
+\input{\INCLUDEPATH}%
+%
+\end{document}
