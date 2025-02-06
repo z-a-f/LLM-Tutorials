@@ -71,6 +71,23 @@ if [ $CLEAN -eq 1 ]; then
     exit 0
 fi
 
+# Make sure the "parallel" is installed
+if ! command -v parallel &> /dev/null; then
+    echo "The 'parallel' command is required but it's not installed. Aborting."
+    exit 1
+fi
+
+# Make sure the "pdflatex" is installed
+if ! command -v pdflatex &> /dev/null; then
+    echo "The 'pdflatex' command is required but it's not installed. Aborting."
+    exit 1
+fi
+
+# Make sure ImageMagick is installed
+if ! command -v convert &> /dev/null; then
+    echo "The 'convert' command is required but it's not installed. Aborting."
+    exit 1
+fi
 
 # Check if template file exists
 if [ ! -f "$TEX_PATH/_template.tex" ]; then
@@ -79,24 +96,26 @@ if [ ! -f "$TEX_PATH/_template.tex" ]; then
 fi
 
 # Collect all tex files
-TEX_FILES=($(find tex -type f -name "*.tex" -not -name "_template.tex"))
-echo Found "${#TEX_FILES[@]}" tex files: "${TEX_FILES[@]}"
+TEX_FILES=($(find "${TEX_PATH}" -type f -name "*.tex" -not -name "_template.tex"))
+
 
 # If not FORCE, exclude files that already have images
-PNG_FILES=$(find img -type f -name "*.png")
+PNG_FILES=($(find "${IMG_PATH}" -type f -name "*.png"))
+# echo Found "${#PNG_FILES[@]}" png files: "${PNG_FILES[@]}"
 if [ $FORCE -eq 0 ]; then
     TEX_FILES=($(for f in "${TEX_FILES[@]}"; do
-        f=$(basename "$f")
-        if [[ ! " $PNG_FILES " =~ " $IMG_PATH/${f%.*}.png " ]]; then
-            echo "$f"
+        fbase=$(basename "${f}")
+        if [[ ! "${IFS}${PNG_FILES[*]}${IFS}" =~ "${IFS}${IMG_PATH}/${fbase%.*}.png${IFS}" ]]; then
+            echo "${f}"
         fi
     done))
 fi
+echo Found "${#TEX_FILES[@]}" tex files: "${TEX_FILES[@]}"
 
-# Make sure the "parallel" is installed
-if ! command -v parallel &> /dev/null; then
-    echo "The 'parallel' command is required but it's not installed. Aborting."
-    exit 1
+# Check there are no tex files to process
+if [ ${#TEX_FILES[@]} -eq 0 ]; then
+    echo "No tex files to process. Exiting..."
+    exit 0
 fi
 
 # Create build folder
@@ -105,22 +124,22 @@ BUILD_PATH=$(realpath "${BUILD_PATH}")
 
 # Copy the template into build files
 for f in "${TEX_FILES[@]}"; do
-    echo "Processing $f"
-    cp $TEX_PATH/_template.tex "$BUILD_PATH/${f%.*}.tex"
+    fbase=$(basename "${f}")
+    cp ${TEX_PATH}/_template.tex "${BUILD_PATH}/${fbase}"
 done
 
 # Compile the tex files in the build directory in parallel
 pdflatex_compile() {
     # echo "===> DEBUG: TEX_FILE_PATH=\"${TEX_PATH}/$1\" pdflatex -shell-escape \"$1\""
-    TEX_FILE_PATH="$TEX_PATH/$1" pdflatex -shell-escape "$1" && \
-    cp "$BUILD_PATH/${1%.*}.png" "$IMG_PATH/${1%.*}.png"
+    # echo "Compiling $1..."
+    fbase=$(basename "$1")
+    TEX_FILE_PATH="${TEX_PATH}/${fbase}" pdflatex -shell-escape "${fbase}" && \
+    cp "${BUILD_PATH}/${fbase%.*}.png" "${IMG_PATH}/${fbase%.*}.png"
 }
 export -f pdflatex_compile
 pushd $BUILD_PATH
 
-printf '%s\n' "${TEX_FILES[@]}" | 
-    # parallel -j $PARALLEL_JOBS pdflatex -shell-escape "{}"
-    parallel -j $PARALLEL_JOBS pdflatex_compile "{}"
+printf '%s\n' "${TEX_FILES[@]}" | parallel -j $PARALLEL_JOBS pdflatex_compile "{}"
 
 popd
 
