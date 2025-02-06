@@ -66,8 +66,8 @@ echo "===> DEBUG: FORCE=$FORCE, CLEAN=$CLEAN, BUILD_PATH=$BUILD_PATH, TEX_PATH=$
 
 # Check if in CLEAN mode
 if [ $CLEAN -eq 1 ]; then
-    echo "Cleaning images in $IMG_PATH"
-    rm -rf $IMG_PATH/*
+    echo "Cleaning $BUILD_PATH"
+    rm -rf $BUILD_PATH/*
     exit 0
 fi
 
