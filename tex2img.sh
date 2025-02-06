@@ -2,19 +2,19 @@
 
 # Creates all images that are stored under "tex", and stores them in "img"
 #
-# The `tex` folder must have `_template.tex` file, with `{{content}}` placeholder.
-# Each latex file under `tex` (except `_template.tex`) will be used to generate an image
-# by adding its content to `_template.tex` and then running `pdflatex -shell-escape`.
-# The generated PNG is copied to the `img` folder.
+# The "tex" folder must have "_template.tex" file, with "{{content}}" placeholder.
+# Each latex file under "tex" (except "_template.tex") will be used to generate an image
+# by adding its content to "_template.tex" and then running "pdflatex -shell-escape".
+# The generated PNG is copied to the "img" folder.
 #
 
-USAGE=$(cat <<EOF
+USAGE=$(cat<<EOF
 ./tex2img.sh [--force] [--clean] [--buildpath <path>] [--texpath <path>] [--imgpath <path>]
-    --force: Force rebuild all images. By default only builds images that don't exist
-    --clean: Clean all images in the 'img' folder
-    -b, --buildpath <path>: Path to the build folder / temporary folder. Default: 'build'
-    -t, --texpath <path>: Path to the tex folder. Default: 'tex'
-    -i, --imgpath <path>: Path to the img folder. Default: 'img'
+    --force: Force rebuild all images. By default only builds images that don\'t exist
+    --clean: Clean all images in the "img" folder
+    -b, --buildpath <path>: Path to the build folder / temporary folder. Default: "build"
+    -t, --texpath <path>: Path to the tex folder. Default: "tex"
+    -i, --imgpath <path>: Path to the img folder. Default: "img"
 EOF
 )
 IFS=$'\n'
@@ -58,11 +58,11 @@ done
 
 export FORCE=${FORCE:-0}
 export CLEAN=${CLEAN:-0}
-export BUILD_PATH=$(realpath ${BUILD_PATH:-"build"})
+export BUILD_PATH=${BUILD_PATH:-"build"}
 export TEX_PATH=$(realpath ${TEX_PATH:-"tex"})
 export IMG_PATH=$(realpath ${IMG_PATH:-"img"})
 
-echo "===> DEBUG: FORCE=$FORCE, CLEAN=$CLEAN, BUILD_PATH=$BUILD_PATH, TEX_PATH=$TEX_PATH, IMG_PATH=$IMG_PATH"
+# echo "===> DEBUG: FORCE=$FORCE, CLEAN=$CLEAN, BUILD_PATH=$BUILD_PATH, TEX_PATH=$TEX_PATH, IMG_PATH=$IMG_PATH"
 
 # Check if in CLEAN mode
 if [ $CLEAN -eq 1 ]; then
@@ -93,8 +93,15 @@ if [ $FORCE -eq 0 ]; then
     done))
 fi
 
+# Make sure the "parallel" is installed
+if ! command -v parallel &> /dev/null; then
+    echo "The 'parallel' command is required but it's not installed. Aborting."
+    exit 1
+fi
+
 # Create build folder
-mkdir -p $BUILD_PATH
+mkdir -p "${BUILD_PATH}"
+BUILD_PATH=$(realpath "${BUILD_PATH}")
 
 # Copy the template into build files
 for f in "${TEX_FILES[@]}"; do
