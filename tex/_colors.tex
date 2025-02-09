@@ -1,0 +1,33 @@
+\usepackage{xcolor}
+
+% Define colors
+\definecolor{colorbrewer1}{RGB}{141,211,199}
+\definecolor{colorbrewer2}{RGB}{255,255,179}
+\definecolor{colorbrewer3}{RGB}{190,186,218}
+\definecolor{colorbrewer4}{RGB}{251,128,114}
+\definecolor{colorbrewer5}{RGB}{128,177,211}
+\definecolor{colorbrewer6}{RGB}{253,180,98}
+\definecolor{colorbrewer7}{RGB}{179,222,105}
+\definecolor{colorbrewer8}{RGB}{252,205,229}
+\definecolor{colorbrewer9}{RGB}{217,217,217}
+\definecolor{colorbrewer10}{RGB}{188,128,189}
+\definecolor{colorbrewer11}{RGB}{204,235,197}
+\definecolor{colorbrewer12}{RGB}{255,237,111}
+\definecolor{colorbrewer13}{RGB}{166,206,227}
+\definecolor{colorbrewer14}{RGB}{31,120,180}
+\definecolor{colorbrewer15}{RGB}{178,223,138}
+\definecolor{colorbrewer16}{RGB}{51,160,44}
+\definecolor{colorbrewer17}{RGB}{251,154,153}
+\definecolor{colorbrewer18}{RGB}{227,26,28}
+\definecolor{colorbrewer19}{RGB}{253,191,111}
+\definecolor{colorbrewer20}{RGB}{255,127,0}
+\definecolor{colorbrewer21}{RGB}{202,178,214}
+\definecolor{colorbrewer22}{RGB}{106,61,154}
+\definecolor{colorbrewer23}{RGB}{255,255,153}
+\definecolor{colorbrewer24}{RGB}{177,89,40}
+
+% Define color indexing
+\newcounter{colorindex}
+\setcounter{colorindex}{1} % Start at 1
+\newcommand{\resetcolorindex}[1][1]{\setcounter{colorindex}{#1}}
+\newcommand{\nextcolorname}{colorbrewer\arabic{colorindex}}

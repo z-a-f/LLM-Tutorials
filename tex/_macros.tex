@@ -1,0 +1,93 @@
+\usepackage{tikz}
+\usepackage{xparse}
+\usepackage{catchfile}
+\usepackage{calc}
+
+% Get environment variable
+\newcommand{\getenv}[2][]{%
+  \CatchFileEdef{\temp}{"|kpsewhich --var-value #2"}{\endlinechar=-1}%
+  \if\relax\detokenize{#1}\relax\temp\else\let#1\temp\fi}%
+
+% Highlighted box
+% #1 -> tikz options
+% #2 -> text to compute the spacing of the box
+% #3 -> text to show and make the box around if present
+\NewDocumentCommand{\hlbox}{O{}om}{%
+    \edef\nextcolorname{colorbrewer\arabic{colorindex}}% Fully expand to a string
+    \stepcounter{colorindex}%
+    \ifnum\value{colorindex}>24\relax\setcounter{colorindex}{1}\fi%
+    \tikz[overlay]\node[%
+        fill=\nextcolorname,%
+        fill opacity=0.9,%
+        text opacity=1,%
+        text depth=0pt,%
+        text height=1.5ex,%
+        anchor=text,%
+        align=right,%
+        rectangle,%
+        rounded corners=0.75mm,%
+        inner sep=1.5pt,%
+        outer sep=0pt,%
+        inner xsep=0pt,%
+        #1]%
+    {#3};%
+    \IfNoValueTF{#2}{%
+        \phantom{#3}%
+    }{% Show box of size #2
+        \tikz[overlay]\node[%
+            fill=none,%
+            draw=black,%
+            text opacity=0.0,%
+            text depth=0pt,%
+            text height=1.5ex,%
+            anchor=text,%
+            align=right,%
+            rectangle,%
+            rounded corners=0.75mm,%
+            inner sep=1.5pt,%
+            outer sep=0pt,%
+            inner xsep=0pt,%
+        ]%
+        {\phantom{#2}};%
+        \phantom{#2}%
+    }%
+}
+
+% Empty box with no fill
+% #1 -> (optional) text to compute the size of the box
+% #2 -> text to show
+\NewDocumentCommand{\nfbox}{om}{%
+    \tikz[overlay]\node[%  Show the main text without any borders
+        fill=none,%
+        draw=none,%
+        text opacity=1.0,%
+        text depth=0pt,%
+        text height=1.5ex,%
+        anchor=text,%
+        align=right,%
+        rectangle,%
+        rounded corners=0.75mm,%
+        inner sep=1.5pt,%
+        outer sep=0pt,%
+        inner xsep=0pt,%
+    ]{#2};%
+    \tikz[overlay]\node[%
+        fill=none,%
+        draw=black,%
+        text opacity=0.0,%
+        text depth=0pt,%
+        text height=1.5ex,%
+        anchor=text,%
+        align=right,%
+        rectangle,%
+        rounded corners=0.75mm,%
+        inner sep=1.5pt,%
+        outer sep=0pt,%
+        inner xsep=0pt,%
+    ]{\IfNoValueTF{#1}{\phantom{#2}}{\phantom{#1}}};%
+    \IfNoValueTF{#1}{\phantom{#2}}{\phantom{#1}}%
+}
+\newcommand{\blankbox}[1]{%
+    % \hlbox[fill=none,draw=black,text opacity=0.0]{#1}%
+    \nfbox[#1]{}%
+}

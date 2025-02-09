@@ -12,6 +12,7 @@ USAGE=$(cat<<EOF
 ./tex2img.sh [--force] [--clean] [--buildpath <path>] [--texpath <path>] [--imgpath <path>]
     --force: Force rebuild all images. By default only builds images that don\'t exist
     --clean: Clean all images in the "img" folder
+    -f, --file <file>: Path to a single specific tex file to build
     -b, --buildpath <path>: Path to the build folder / temporary folder. Default: "build"
     -t, --texpath <path>: Path to the tex folder. Default: "tex"
     -i, --imgpath <path>: Path to the img folder. Default: "img"
@@ -31,6 +32,10 @@ while [[ $# -gt 0 ]]; do
         --clean)
             CLEAN=1
             shift
+            ;;
+        -f|--file)
+            FILE="$2"
+            shift 2
             ;;
         -b|--buildpath)
             BUILD_PATH="$2"
@@ -58,6 +63,7 @@ done
 
 export FORCE=${FORCE:-0}
 export CLEAN=${CLEAN:-0}
+export FILE=${FILE:-"*.tex"}
 export BUILD_PATH=${BUILD_PATH:-"build"}
 export TEX_PATH=$(realpath ${TEX_PATH:-"tex"})
 export IMG_PATH=$(realpath ${IMG_PATH:-"img"})
@@ -96,8 +102,7 @@ if [ ! -f "$TEX_PATH/_template.tex" ]; then
 fi
 
 # Collect all tex files
-TEX_FILES=($(find "${TEX_PATH}" -type f -name "*.tex" -not -name "_template.tex"))
-
+TEX_FILES=($(find "${TEX_PATH}" -type f -name "${FILE}" -not -name "_*.tex"))
 
 # If not FORCE, exclude files that already have images
 PNG_FILES=($(find "${IMG_PATH}" -type f -name "*.png"))
