@@ -68,6 +68,9 @@ export BUILD_PATH=${BUILD_PATH:-"build"}
 export TEX_PATH=$(realpath ${TEX_PATH:-"tex"})
 export IMG_PATH=$(realpath ${IMG_PATH:-"img"})
 
+# Make sure img path exists
+mkdir -p $IMG_PATH
+
 # echo "===> DEBUG: FORCE=$FORCE, CLEAN=$CLEAN, BUILD_PATH=$BUILD_PATH, TEX_PATH=$TEX_PATH, IMG_PATH=$IMG_PATH"
 
 # Check if in CLEAN mode
