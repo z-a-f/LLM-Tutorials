@@ -1,15 +1,23 @@
 \documentclass[varwidth,convert={density=300,convertexe={magick}}]{standalone}
 \standaloneconfig{border=1pt 2pt 1pt 2pt}
 
-\input{../tex/_colors.tex}
-\input{../tex/_macros.tex}
+% Get environment variable
+\usepackage{catchfile}
+\newcommand{\getenv}[2][]{%
+  \CatchFileEdef{\temp}{"|kpsewhich --var-value #2"}{\endlinechar=-1}%
+  \if\relax\detokenize{#1}\relax\temp\else\let#1\temp\fi}%
+
+\getenv[\INCLUDEPATH]{TEX_FILE_PATH}%
+\getenv[\TEXPATH]{TEX_PATH}%
+
+\input{\TEXPATH/_colors.tex}
+\input{\TEXPATH/_macros.tex}
 
 \begin{document}
 % \pagecolor{white}%
 %
 % pdflatex is very picky about the file names during compilation.
 % Although not ideal, you need to copy the file and rename to what you want it to be.
-\getenv[\INCLUDEPATH]{TEX_FILE_PATH}%
 \input{\INCLUDEPATH}%
 %
 \end{document}

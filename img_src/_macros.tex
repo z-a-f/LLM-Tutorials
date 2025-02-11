@@ -1,12 +1,7 @@
 \usepackage{tikz}
 \usepackage{xparse}
-\usepackage{catchfile}
 \usepackage{calc}
 
-% Get environment variable
-\newcommand{\getenv}[2][]{%
-  \CatchFileEdef{\temp}{"|kpsewhich --var-value #2"}{\endlinechar=-1}%
-  \if\relax\detokenize{#1}\relax\temp\else\let#1\temp\fi}%
 
 % Highlighted box
 % #1 -> (optional) tikz options

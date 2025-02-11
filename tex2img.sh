@@ -65,7 +65,7 @@ export FORCE=${FORCE:-0}
 export CLEAN=${CLEAN:-0}
 export FILE=${FILE:-"*.tex"}
 export BUILD_PATH=${BUILD_PATH:-"build"}
-export TEX_PATH=$(realpath ${TEX_PATH:-"tex"})
+export TEX_PATH=$(realpath ${TEX_PATH:-"img_src"})
 export IMG_PATH=$(realpath ${IMG_PATH:-"img"})
 
 # Make sure img path exists
@@ -141,7 +141,7 @@ pdflatex_compile() {
     # echo "===> DEBUG: TEX_FILE_PATH=\"${TEX_PATH}/$1\" pdflatex -shell-escape \"$1\""
     # echo "Compiling $1..."
     fbase=$(basename "$1")
-    TEX_FILE_PATH="${TEX_PATH}/${fbase}" pdflatex -shell-escape "${fbase}" && \
+    TEX_PATH="${TEX_PATH}" TEX_FILE_PATH="${TEX_PATH}/${fbase}" pdflatex -shell-escape "${fbase}" && \
     cp "${BUILD_PATH}/${fbase%.*}.png" "${IMG_PATH}/${fbase%.*}.png"
 }
 export -f pdflatex_compile
