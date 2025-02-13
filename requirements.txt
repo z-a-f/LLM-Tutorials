@@ -1,0 +1,12 @@
+# numpy
+# matplotlib
+# pandas
+
+torch==2.6.0
+triton==3.2.0
+transformers[torch]==4.48.2
+datasets==3.2.0
+tokenizers==0.21.0
+
+lightning==2.5.0.post0
+wandb==0.19.6
