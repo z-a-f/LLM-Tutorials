@@ -4,7 +4,9 @@ models/*
 build/*
 img/*
 *.json
-
+checkpoints/
+lightning_logs/
+wandb/
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
